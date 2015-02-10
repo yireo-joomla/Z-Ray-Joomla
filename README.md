@@ -20,3 +20,6 @@ Create a directory `/usr/local/zend/var/zray/extensions/Z-Ray-Joomla`, and add t
 
 ## Features
 coming soon
+
+## Contact
+Contact me at jisse AT yireo PLUSADOT com or tweet to @yireo
