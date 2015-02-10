@@ -3,14 +3,15 @@
 This is an extension to add functionality to the Zend Server Z-Ray. 
 It will result in additional tab(s) to be presented in the browser.
 
-## Current state
+### Current state
 Pre-alpha (not ready for production)
 
-## Requirements
-Zend Server 8 with Z-Ray support enabled. This extension will only output on Joomla sites with the Z-Ray
-toolbar enabled.
+### Requirements
+Zend Server 8 with Z-Ray support enabled.
 
-## Installation
+This extension will only output on Joomla sites with the Z-Ray toolbar enabled.
+
+### Installation
 Create a directory `/usr/local/zend/var/zray/extensions/Z-Ray-Joomla`, and add the contents of this repo within.
 
 ```
@@ -18,8 +19,8 @@ Create a directory `/usr/local/zend/var/zray/extensions/Z-Ray-Joomla`, and add t
     /usr/local/zend/var/zray/extensions/Z-Ray-Joomla/logo.png
 ```
 
-## Features
+### Features
 coming soon
 
-## Contact
+### Contact
 Contact me at jisse AT yireo PLUSADOT com or tweet to @yireo
