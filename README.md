@@ -12,11 +12,11 @@ Zend Server 8 with Z-Ray support enabled.
 This extension will only output on Joomla sites with the Z-Ray toolbar enabled.
 
 ### Installation
-Create a directory `/usr/local/zend/var/zray/extensions/Z-Ray-Joomla`, and add the contents of this repo within.
+Create a directory `/usr/local/zend/var/zray/extensions/Joomla`, and add the contents of this repo within.
 
 ```
-    /usr/local/zend/var/zray/extensions/Z-Ray-Joomla/zray.php
-    /usr/local/zend/var/zray/extensions/Z-Ray-Joomla/logo.png
+    /usr/local/zend/var/zray/extensions/Joomla/zray.php
+    /usr/local/zend/var/zray/extensions/Joomla/logo.png
 ```
 
 ### Features
