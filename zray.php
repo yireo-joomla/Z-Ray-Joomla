@@ -5,7 +5,7 @@
  *
  * @author    Jisse Reitsma (jisse@yireo.com)
  * @copyright Copyright 2015
- * @license   GNU Public License
+ * @license   Zend Server License
  * @link      https://www.yireo.com/software/joomla/zray
  * @version   0.1.0
  */
