@@ -136,7 +136,7 @@ class Joomla
             return false;
         }
 
-        $eventHash = md5(var_export($arguments,true));
+        $eventHash = md5($this->convertToString($arguments));
         $eventName = array_shift($arguments);
 
         $argument1 = null;
@@ -328,15 +328,16 @@ class Joomla
     private function convertToString($variable)
     {
         if (is_array($variable)) {
+            foreach($variable as $name => $value) {
+                $value = $this->convertToString($value);
+                $variable[$name] = $value;
+            }
+
             return var_export($variable, true);
         }
 
         if (is_object($variable)) {
-            if ($variable instanceof SimpleXML) {
-                return '[SimpleXML]';
-            }
-
-            return var_export($variable, true);
+            return '['.get_class($variable).']';
         }
 
         return $variable;
