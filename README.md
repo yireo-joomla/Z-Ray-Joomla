@@ -4,7 +4,7 @@ This is an extension to add functionality to the Zend Server Z-Ray.
 It will result in additional tab(s) to be presented in the browser.
 
 ### Current state
-Version 0.1.0 (beta) = Ready for production, but perhaps not as many features as possible. Leave your comment for feature suggestions.
+Version 0.2.1 (beta) = Ready for production, but perhaps not as many features as possible. Leave your comment for feature suggestions.
 
 ### Requirements
 Zend Server 8 with Z-Ray support enabled.

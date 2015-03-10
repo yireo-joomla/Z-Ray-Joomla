@@ -7,7 +7,7 @@
  * @copyright Copyright 2015
  * @license   Zend Server License
  * @link      https://www.yireo.com/software/joomla/zray
- * @version   0.2.0
+ * @version   0.2.1
  */
 class Joomla
 {
@@ -151,7 +151,7 @@ class Joomla
             }
 
             if(!empty($arguments)) {
-                $arguments = var_export($arguments, true);
+                $arguments = $this->convertToString($arguments);
             } else {
                 $arguments = null;
             }
@@ -309,15 +309,38 @@ class Joomla
             $events[] = array(
                 'Event' => $joomlaEvent['event'],
                 'Occurances' => $joomlaEvent['count'],
-                'Argument 1' => var_export($joomlaEvent['argument1'], true),
-                'Argument 2' => var_export($joomlaEvent['argument2'], true),
-                'Argument 3' => var_export($joomlaEvent['argument3'], true),
-                'Other arguments' => var_export($joomlaEvent['arguments'], true),
+                'Argument 1' => $this->convertToString($joomlaEvent['argument1']),
+                'Argument 2' => $this->convertToString($joomlaEvent['argument2']),
+                'Argument 3' => $this->convertToString($joomlaEvent['argument3']),
+                'Other arguments' => $this->convertToString($joomlaEvent['arguments']),
             );
         }
 
 		return $events;
 	}
+
+    /**
+     * Helper method to dump a variable to a string
+     *
+     * @param mixed $variable
+     * @return mixed
+     */
+    private function convertToString($variable)
+    {
+        if (is_array($variable)) {
+            return var_export($variable, true);
+        }
+
+        if (is_object($variable)) {
+            if ($variable instanceof SimpleXML) {
+                return '[SimpleXML]';
+            }
+
+            return var_export($variable, true);
+        }
+
+        return $variable;
+    }
 }
 
 // Initialize this ZRay extension
