@@ -328,12 +328,14 @@ class Joomla
     private function convertToString($variable)
     {
         if (is_array($variable)) {
+
+            $array = array();
             foreach($variable as $name => $value) {
                 $value = $this->convertToString($value);
-                $variable[$name] = $value;
+                $array[$name] = $value;
             }
 
-            return var_export($variable, true);
+            return var_export($array, true);
         }
 
         if (is_object($variable)) {
