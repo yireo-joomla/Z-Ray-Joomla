@@ -2,6 +2,8 @@
 
 This is an extension to add functionality to the Zend Server Z-Ray. 
 It will result in additional tab(s) to be presented in the browser.
+More information on the usage of this extension can be found on our site:
+[www.yireo.com/software/joomla-extensions/zray](https://www.yireo.com/software/joomla-extensions/zray)
 
 ### Current state
 Version 0.2.1 (beta) = Ready for production, but perhaps not as many features as possible. Leave your comment for feature suggestions.
