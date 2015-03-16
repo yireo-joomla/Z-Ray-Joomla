@@ -65,11 +65,50 @@ class Joomla
 	public function afterDocumentRender($context, &$storage)
 	{
 		$storage['request'] = $this->getRequest();
+		$storage['config'] = $this->getConfig();
 		$storage['modules'] = $this->getModules();
 		$storage['events'] = $this->getEvents();
         $storage['plugins'] = $this->getPlugins();
         $storage['files'] = $this->getFiles();
 	}
+
+	/**
+	 * Method called before a specific plugin oject method has been called
+	 *
+	 * @param array $context
+	 * @param array $storage
+	 */
+    public function beforePluginObjectCall($context, &$storage)
+    {
+        $arguments = $context['functionArgs'];
+        if (!isset($arguments[0][0])) {
+            return;
+        }
+
+        $plugin = $context['this'];
+        $pluginClass = get_class($plugin);
+
+        if(isset($arguments[0]['event'])) {
+            $method = $arguments[0]['event'];
+        } elseif(isset($context['locals']['event'])) {
+            $method = $context['locals']['event'];
+        } else {
+            return;
+        }
+
+        $hash = md5(strtolower($pluginClass.':'.$method));
+        if (isset($this->joomlaPlugins[$hash])) {
+            $this->joomlaPlugins[$hash]['type'] = 'Object-based observer';
+            return;
+        }
+
+        $this->joomlaPlugins[$hash] = array(
+            'type' => 'Object-based observer',
+            'class' => $pluginClass,
+            'method' => $method,
+            'timer.start' => microtime(true),
+        );
+    }
 
 	/**
 	 * Method called after a specific plugin oject method has been called
@@ -81,16 +120,64 @@ class Joomla
     {
         $arguments = $context['functionArgs'];
         if (!isset($arguments[0][0])) {
-            return false;
+            return;
         }
 
         $plugin = $context['this'];
         $pluginClass = get_class($plugin);
-        $methodName = $context['locals']['event'];
-        $this->joomlaPlugins[] = array(
-            'type' => 'Object-based observer',
+ 
+        if(isset($arguments[0]['event'])) {
+            $method = $arguments[0]['event'];
+        } elseif(isset($context['locals']['event'])) {
+            $method = $context['locals']['event'];
+        } else {
+            return;
+        }
+
+        $hash = md5(strtolower($pluginClass.':'.$method));
+
+        if (!isset($this->joomlaPlugins[$hash])) {
+            return;
+        }
+
+        $this->joomlaPlugins[$hash]['timer.end'] = microtime(true);
+        $this->joomlaPlugins[$hash]['timer.total'] = $this->joomlaPlugins[$hash]['timer.end'] - $this->joomlaPlugins[$hash]['timer.start'];
+    }
+
+	/**
+	 * Method called before a specific plugin function method has been called
+	 *
+	 * @param array $context
+	 * @param array $storage
+	 */
+    public function beforePluginFunctionCall($context, &$storage)
+    {
+        $arguments = $context['functionArgs'];
+        if (!isset($arguments[0][0])) {
+            return;
+        }
+
+        $object = $arguments[0][0];
+        if(is_object($object) && $object instanceof JPlugin) {
+            $pluginClass = get_class($object);
+        } elseif(is_string($object) && preg_match('/^plg/i', $object)) {
+            $pluginClass = $object;
+        } else {
+            return;
+        }
+
+        $method = $arguments[0][1];
+
+        $hash = md5(strtolower($pluginClass.':'.$method));
+        if (isset($this->joomlaPlugins[$hash])) {
+            return;
+        }
+
+        $this->joomlaPlugins[$hash] = array(
+            'type' => 'Function-based observer',
             'class' => $pluginClass,
-            'method' => $methodName,
+            'method' => $method,
+            'timer.start' => microtime(true),
         );
     }
 
@@ -104,7 +191,7 @@ class Joomla
     {
         $arguments = $context['functionArgs'];
         if (!isset($arguments[0][0])) {
-            return false;
+            return;
         }
 
         $object = $arguments[0][0];
@@ -113,27 +200,32 @@ class Joomla
         } elseif(is_string($object) && preg_match('/^plg/i', $object)) {
             $pluginClass = $object;
         } else {
-            return false;
+            return;
         }
 
-        $this->joomlaPlugins[] = array(
-            'type' => 'Function-based observer',
-            'class' => $pluginClass,
-            'method' => $arguments[0][1],
-        );
+        $method = $arguments[0][1];
+
+        $hash = md5(strtolower($pluginClass.':'.$method));
+
+        if (!isset($this->joomlaPlugins[$hash])) {
+            return;
+        }
+
+        $this->joomlaPlugins[$hash]['timer.end'] = microtime(true);
+        $this->joomlaPlugins[$hash]['timer.total'] = $this->joomlaPlugins[$hash]['timer.end'] - $this->joomlaPlugins[$hash]['timer.start'];
     }
 
 	/**
-	 * Method called after a specific event has been dispatched
+	 * Method called before a specific event has been dispatched
 	 *
 	 * @param array $context
 	 * @param array $storage
 	 */
-	public function afterEventTrigger($context, &$storage)
+	public function beforeEventTrigger($context, &$storage)
 	{
         $arguments = $context['functionArgs'];
         if (empty($arguments)) {
-            return false;
+            return;
         }
 
         $eventHash = md5($this->convertToString($arguments));
@@ -162,18 +254,72 @@ class Joomla
         if(!isset($this->joomlaEvents[$eventHash])) {
             $this->joomlaEvents[$eventHash] = array(
                 'event' => $eventName,
+                'timer.start' => microtime(true),
                 'count' => 1,
                 'argument1' => $argument1,
                 'argument2' => $argument2,
                 'argument3' => $argument3,
                 'arguments' => $arguments,
             );
+
         } else {
             $this->joomlaEvents[$eventHash]['count']++;
         }
-
-        return true;
 	}
+
+	/**
+	 * Method called after a specific event has been dispatched
+	 *
+	 * @param array $context
+	 * @param array $storage
+	 */
+	public function afterEventTrigger($context, &$storage)
+	{
+        $arguments = $context['functionArgs'];
+        if (empty($arguments)) {
+            return;
+        }
+
+        $eventHash = md5($this->convertToString($arguments));
+
+        if(!isset($this->joomlaEvents[$eventHash])) {
+            return;
+        }
+
+        $this->joomlaEvents[$eventHash]['timer.end'] = microtime(true);
+		$this->joomlaEvents[$eventHash]['timer.total'] = $this->joomlaEvents[$eventHash]['timer.end'] - $this->joomlaEvents[$eventHash]['timer.start'];
+	}
+
+	/**
+	 * Method called before a specific module has been rendered
+	 *
+	 * @param array $context
+	 * @param array $storage
+	 */
+	public function beforeModuleRender($context, &$storage)
+    {
+		$arguments = $context['functionArgs'];
+		if (empty($arguments)) {
+			return;
+		}
+
+		$module = $arguments[0];
+		if (empty($module) || !is_object($module)) {
+			return;
+		}
+
+        $params = json_decode($module->params, true);
+        $cache = (isset($params['cache']) && $params['cache'] == 1) ? true : false;
+
+		$this->joomlaModules[$module->id] = array(
+			'id' => $module->id,
+			'module' => $module->module,
+			'position' => $module->position,
+			'params' => $params,
+			'cache' => $cache,
+			'timer.start' => microtime(true),
+		);
+    }
 
 	/**
 	 * Method called after a specific module has been rendered
@@ -184,24 +330,24 @@ class Joomla
 	public function afterModuleRender($context, &$storage)
 	{
 		$arguments = $context['functionArgs'];
-		if (empty($arguments))
-		{
+		if (empty($arguments)) {
 			return;
 		}
 
 		$module = $arguments[0];
-		if (empty($module) || !is_object($module))
-		{
+		if (empty($module) || !is_object($module)) {
 			return;
 		}
 
-		$this->joomlaModules[] = array(
-			'id' => $module->id,
-			'title' => $module->title,
-			'module' => $module->module,
-			'position' => $module->position,
-			'content' => $module->content,
-		);
+        if (empty($this->joomlaModules[$module->id]))
+        {
+            return;
+        }
+
+		$this->joomlaModules[$module->id]['timer.end'] = microtime(true);
+		$this->joomlaModules[$module->id]['timer.total'] = $this->joomlaModules[$module->id]['timer.end'] - $this->joomlaModules[$module->id]['timer.start'];
+		$this->joomlaModules[$module->id]['title'] = $module->title;
+		$this->joomlaModules[$module->id]['content'] = $module->content;
 	}
 
 	/**
@@ -214,7 +360,7 @@ class Joomla
     {
         $arguments = $context['functionArgs'];
         if (empty($arguments)) {
-            return false;
+            return;
         }
 
         $path = $context['returnValue'];
@@ -226,6 +372,48 @@ class Joomla
     }
 
 	/**
+	 * Method to return an array representing the current Joomla configuration
+	 *
+	 * @return array
+	 */
+	private function getConfig()
+	{
+		$app = JFactory::getApplication();
+		$config = JFactory::getConfig();
+
+        $version = null;
+        if (!class_exists('JVersion')) {
+            jimport('joomla.version.version');
+        }
+
+        if (class_exists('JVersion')) {
+            $jversion = new JVersion();
+            $version = $jversion->getLongVersion();
+        }
+
+		$data = array(
+			array('Key' => 'Joomla Version', 'Value' => $version),
+			array('Key' => 'Joomla Template', 'Value' => $app->getTemplate()),
+			array('Key' => 'Caching', 'Value' => $config->get('caching')),
+			array('Key' => 'Cache handler', 'Value' => $config->get('cache_handler')),
+			array('Key' => 'Cache time', 'Value' => $config->get('cachetime')),
+			array('Key' => 'Session handler', 'Value' => $config->get('session_handler')),
+			array('Key' => 'SEF', 'Value' => $config->get('sef')),
+			array('Key' => 'SEF Rewrites', 'Value' => $config->get('sef_rewrite')),
+			array('Key' => 'Debug', 'Value' => $config->get('debug')),
+			array('Key' => 'Gzip', 'Value' => $config->get('gzip')),
+			array('Key' => 'Error reporting', 'Value' => $config->get('error_reporting')),
+			array('Key' => 'DB type', 'Value' => $config->get('dbtype')),
+			array('Key' => 'DB host', 'Value' => $config->get('host')),
+			array('Key' => 'DB database', 'Value' => $config->get('db')),
+			array('Key' => 'Offset', 'Value' => $config->get('offset')),
+			array('Key' => 'Mailer', 'Value' => $config->get('mailer')),
+		);
+
+		return $data;
+	}
+
+	/**
 	 * Method to return an array representing the current HTTP request
 	 *
 	 * @return array
@@ -233,13 +421,24 @@ class Joomla
 	private function getRequest()
 	{
 		$app = JFactory::getApplication();
+        $input = $app->input;
 
 		$request = array(
-			array('Key' => 'Component', 'Value' => $app->input->get('option')),
-			array('Key' => 'View', 'Value' => $app->input->get('view')),
-			array('Key' => 'Layout', 'Value' => $app->input->get('layout', 'default')),
-			array('Key' => 'ID', 'Value' => $app->input->get('id')),
+			'option' => array('Key' => 'Component', 'Value' => $input->get('option')),
+			'view' => array('Key' => 'View', 'Value' => $input->get('view')),
+			'layout' => array('Key' => 'Layout', 'Value' => $input->get('layout', 'default')),
+			'id' => array('Key' => 'ID', 'Value' => $input->get('id')),
+			'Itemid' => array('Key' => 'Itemid', 'Value' => $input->get('Itemid')),
 		);
+
+        // Dump other variables
+        foreach ($_REQUEST as $name => $value) {
+            if(isset($request[$name])) {
+                continue;
+            }
+
+            $request[$name] = array('Key' => $name, 'Value' => $value);
+        }
 
 		return $request;
 	}
@@ -273,7 +472,9 @@ class Joomla
             $module['Title'] = $joomlaModule['title'];
             $module['Module'] = $joomlaModule['module'];
             $module['Position'] = $joomlaModule['position'];
+            $module['Cached'] = ($joomlaModule['cache']) ? 'Yes' : 'No';
             $module['ID'] = $joomlaModule['id'];
+            $module['Time'] = $this->formatTime($joomlaModule['timer.total']);
             $module['Content'] = (empty($joomlaModule['content'])) ? 'No content' : $joomlaModule['content'];
 
             $modules[] = $module;
@@ -291,7 +492,17 @@ class Joomla
     {
         $plugins = array();
         foreach($this->joomlaPlugins as $joomlaPlugin) {
-            $plugins[] = $joomlaPlugin;
+
+            if(!isset($joomlaPlugin['timer.total'])) {
+                print_r($joomlaPlugin);
+            }
+
+            $plugins[] = array(
+                'Type' => $joomlaPlugin['type'],
+                'Class' => $joomlaPlugin['class'],
+                'Method' => $joomlaPlugin['method'],
+                'Time' => $this->formatTime($joomlaPlugin['timer.total']),
+            );
         }
 
         return $plugins;
@@ -308,6 +519,7 @@ class Joomla
         foreach($this->joomlaEvents as $joomlaEvent) {
             $events[] = array(
                 'Event' => $joomlaEvent['event'],
+                'Time' => $this->formatTime($joomlaEvent['timer.total']),
                 'Occurances' => $joomlaEvent['count'],
                 'Argument 1' => $this->convertToString($joomlaEvent['argument1']),
                 'Argument 2' => $this->convertToString($joomlaEvent['argument2']),
@@ -344,6 +556,17 @@ class Joomla
 
         return $variable;
     }
+
+    /**
+     * Helper method to get the timer 
+     *
+     * @param mixed $variable
+     * @return mixed
+     */
+    private function formatTime($seconds)
+    {
+        return number_format((float)$seconds * 1000, 2).' ms';
+    }
 }
 
 // Initialize this ZRay extension
@@ -358,9 +581,9 @@ $zrayJoomla->getZRay()->setEnabledAfter('JFactory::getApplication');
 
 // Trace functions
 $zrayJoomla->getZRay()->traceFunction('JPath::find', function(){}, array($zrayJoomla, 'afterPathFind'));
-$zrayJoomla->getZRay()->traceFunction('JDispatcher::trigger', function(){}, array($zrayJoomla, 'afterEventTrigger'));
-$zrayJoomla->getZRay()->traceFunction('JEventDispatcher::trigger', function(){}, array($zrayJoomla, 'afterEventTrigger'));
-$zrayJoomla->getZRay()->traceFunction('call_user_func_array', function(){}, array($zrayJoomla, 'afterPluginFunctionCall'));
-$zrayJoomla->getZRay()->traceFunction('JEvent::update', function(){}, array($zrayJoomla, 'afterPluginObjectCall'));
-$zrayJoomla->getZRay()->traceFunction('JModuleHelper::renderModule', function(){}, array($zrayJoomla, 'afterModuleRender'));
+$zrayJoomla->getZRay()->traceFunction('JDispatcher::trigger', array($zrayJoomla, 'beforeEventTrigger'), array($zrayJoomla, 'afterEventTrigger'));
+$zrayJoomla->getZRay()->traceFunction('JEventDispatcher::trigger', array($zrayJoomla, 'beforeEventTrigger'), array($zrayJoomla, 'afterEventTrigger'));
+$zrayJoomla->getZRay()->traceFunction('call_user_func_array', array($zrayJoomla, 'beforePluginFunctionCall'), array($zrayJoomla, 'afterPluginFunctionCall'));
+$zrayJoomla->getZRay()->traceFunction('JEvent::update', array($zrayJoomla, 'beforePluginObjectCall'), array($zrayJoomla, 'afterPluginObjectCall'));
+$zrayJoomla->getZRay()->traceFunction('JModuleHelper::renderModule', array($zrayJoomla, 'beforeModuleRender'), array($zrayJoomla, 'afterModuleRender'));
 $zrayJoomla->getZRay()->traceFunction('JDocument::render', function(){}, array($zrayJoomla, 'afterDocumentRender'));
