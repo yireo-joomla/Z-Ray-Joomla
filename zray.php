@@ -7,7 +7,7 @@
  * @copyright Copyright 2015
  * @license   Zend Server License
  * @link      https://www.yireo.com/software/joomla/zray
- * @version   0.2.1
+ * @version   0.2.2
  */
 class Joomla
 {
@@ -517,9 +517,12 @@ class Joomla
 	{
         $events = array();
         foreach($this->joomlaEvents as $joomlaEvent) {
+
+            $time = (isset($joomlaEvent['timer.total'])) ? $this->formatTime($joomlaEvent['timer.total']) : null;
+
             $events[] = array(
                 'Event' => $joomlaEvent['event'],
-                'Time' => $this->formatTime($joomlaEvent['timer.total']),
+                'Time' => $time,
                 'Occurances' => $joomlaEvent['count'],
                 'Argument 1' => $this->convertToString($joomlaEvent['argument1']),
                 'Argument 2' => $this->convertToString($joomlaEvent['argument2']),
