@@ -11,73 +11,73 @@
  */
 class Joomla
 {
-	/**
-	 * Internal reference to ZRayExtension instance
-	 */
-	private $zray = null;
+    /**
+     * Internal reference to ZRayExtension instance
+     */
+    private $zray = null;
 
-	/**
-	 * Internal listing of Joomla modules
-	 */
-	private $joomlaModules = array();
+    /**
+     * Internal listing of Joomla modules
+     */
+    private $joomlaModules = array();
 
-	/**
-	 * Internal listing of Joomla plugins
-	 */
-	private $joomlaPlugins = array();
+    /**
+     * Internal listing of Joomla plugins
+     */
+    private $joomlaPlugins = array();
 
-	/**
-	 * Internal listing of Joomla events (triggered by JEventDispatcher)
-	 */
-	private $joomlaEvents = array();
+    /**
+     * Internal listing of Joomla events (triggered by JEventDispatcher)
+     */
+    private $joomlaEvents = array();
 
-	/**
-	 * Internal listing of Joomla files (triggered by JPath::find)
-	 */
+    /**
+     * Internal listing of Joomla files (triggered by JPath::find)
+     */
     private $joomlaPathFiles = array();
 
-	/**
-	 * Method to bind ZRayExtension instance internally
-	 *
-	 * @param \ZRayExtension $zray
-	 */
-	public function setZRay($zray)
-	{
-		$this->zray = $zray;
-	}
+    /**
+     * Method to bind ZRayExtension instance internally
+     *
+     * @param \ZRayExtension $zray
+     */
+    public function setZRay($zray)
+    {
+        $this->zray = $zray;
+    }
 
-	/**
-	 * Method to return the current ZRayExtension instance
-	 *
-	 * @return \ZRayExtension
-	 */
-	public function getZRay()
-	{
-		return $this->zray;
-	}
+    /**
+     * Method to return the current ZRayExtension instance
+     *
+     * @return \ZRayExtension
+     */
+    public function getZRay()
+    {
+        return $this->zray;
+    }
 
-	/**
-	 * Method called after JDocument has rendered
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
-	public function afterDocumentRender($context, &$storage)
-	{
-		$storage['request'] = $this->getRequest();
-		$storage['config'] = $this->getConfig();
-		$storage['modules'] = $this->getModules();
-		$storage['events'] = $this->getEvents();
+    /**
+     * Method called after JDocument has rendered
+     *
+     * @param array $context
+     * @param array $storage
+     */
+    public function afterDocumentRender($context, &$storage)
+    {
+        $storage['request'] = $this->getRequest();
+        $storage['config'] = $this->getConfig();
+        $storage['modules'] = $this->getModules();
+        $storage['events'] = $this->getEvents();
         $storage['plugins'] = $this->getPlugins();
         $storage['files'] = $this->getFiles();
-	}
+    }
 
-	/**
-	 * Method called before a specific plugin oject method has been called
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
+    /**
+     * Method called before a specific plugin oject method has been called
+     *
+     * @param array $context
+     * @param array $storage
+     */
     public function beforePluginObjectCall($context, &$storage)
     {
         $arguments = $context['functionArgs'];
@@ -110,12 +110,12 @@ class Joomla
         );
     }
 
-	/**
-	 * Method called after a specific plugin oject method has been called
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
+    /**
+     * Method called after a specific plugin oject method has been called
+     *
+     * @param array $context
+     * @param array $storage
+     */
     public function afterPluginObjectCall($context, &$storage)
     {
         $arguments = $context['functionArgs'];
@@ -144,12 +144,12 @@ class Joomla
         $this->joomlaPlugins[$hash]['timer.total'] = $this->joomlaPlugins[$hash]['timer.end'] - $this->joomlaPlugins[$hash]['timer.start'];
     }
 
-	/**
-	 * Method called before a specific plugin function method has been called
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
+    /**
+     * Method called before a specific plugin function method has been called
+     *
+     * @param array $context
+     * @param array $storage
+     */
     public function beforePluginFunctionCall($context, &$storage)
     {
         $arguments = $context['functionArgs'];
@@ -181,12 +181,12 @@ class Joomla
         );
     }
 
-	/**
-	 * Method called after a specific plugin function method has been called
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
+    /**
+     * Method called after a specific plugin function method has been called
+     *
+     * @param array $context
+     * @param array $storage
+     */
     public function afterPluginFunctionCall($context, &$storage)
     {
         $arguments = $context['functionArgs'];
@@ -215,14 +215,14 @@ class Joomla
         $this->joomlaPlugins[$hash]['timer.total'] = $this->joomlaPlugins[$hash]['timer.end'] - $this->joomlaPlugins[$hash]['timer.start'];
     }
 
-	/**
-	 * Method called before a specific event has been dispatched
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
-	public function beforeEventTrigger($context, &$storage)
-	{
+    /**
+     * Method called before a specific event has been dispatched
+     *
+     * @param array $context
+     * @param array $storage
+     */
+    public function beforeEventTrigger($context, &$storage)
+    {
         $arguments = $context['functionArgs'];
         if (empty($arguments)) {
             return;
@@ -265,16 +265,16 @@ class Joomla
         } else {
             $this->joomlaEvents[$eventHash]['count']++;
         }
-	}
+    }
 
-	/**
-	 * Method called after a specific event has been dispatched
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
-	public function afterEventTrigger($context, &$storage)
-	{
+    /**
+     * Method called after a specific event has been dispatched
+     *
+     * @param array $context
+     * @param array $storage
+     */
+    public function afterEventTrigger($context, &$storage)
+    {
         $arguments = $context['functionArgs'];
         if (empty($arguments)) {
             return;
@@ -287,75 +287,75 @@ class Joomla
         }
 
         $this->joomlaEvents[$eventHash]['timer.end'] = microtime(true);
-		$this->joomlaEvents[$eventHash]['timer.total'] = $this->joomlaEvents[$eventHash]['timer.end'] - $this->joomlaEvents[$eventHash]['timer.start'];
-	}
+        $this->joomlaEvents[$eventHash]['timer.total'] = $this->joomlaEvents[$eventHash]['timer.end'] - $this->joomlaEvents[$eventHash]['timer.start'];
+    }
 
-	/**
-	 * Method called before a specific module has been rendered
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
-	public function beforeModuleRender($context, &$storage)
+    /**
+     * Method called before a specific module has been rendered
+     *
+     * @param array $context
+     * @param array $storage
+     */
+    public function beforeModuleRender($context, &$storage)
     {
-		$arguments = $context['functionArgs'];
-		if (empty($arguments)) {
-			return;
-		}
+        $arguments = $context['functionArgs'];
+        if (empty($arguments)) {
+            return;
+        }
 
-		$module = $arguments[0];
-		if (empty($module) || !is_object($module)) {
-			return;
-		}
+        $module = $arguments[0];
+        if (empty($module) || !is_object($module)) {
+            return;
+        }
 
         $params = json_decode($module->params, true);
         $cache = (isset($params['cache']) && $params['cache'] == 1) ? true : false;
 
-		$this->joomlaModules[$module->id] = array(
-			'id' => $module->id,
-			'module' => $module->module,
-			'position' => $module->position,
-			'params' => $params,
-			'cache' => $cache,
-			'timer.start' => microtime(true),
-		);
+        $this->joomlaModules[$module->id] = array(
+            'id' => $module->id,
+            'module' => $module->module,
+            'position' => $module->position,
+            'params' => $params,
+            'cache' => $cache,
+            'timer.start' => microtime(true),
+        );
     }
 
-	/**
-	 * Method called after a specific module has been rendered
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
-	public function afterModuleRender($context, &$storage)
-	{
-		$arguments = $context['functionArgs'];
-		if (empty($arguments)) {
-			return;
-		}
+    /**
+     * Method called after a specific module has been rendered
+     *
+     * @param array $context
+     * @param array $storage
+     */
+    public function afterModuleRender($context, &$storage)
+    {
+        $arguments = $context['functionArgs'];
+        if (empty($arguments)) {
+            return;
+        }
 
-		$module = $arguments[0];
-		if (empty($module) || !is_object($module)) {
-			return;
-		}
+        $module = $arguments[0];
+        if (empty($module) || !is_object($module)) {
+            return;
+        }
 
         if (empty($this->joomlaModules[$module->id]))
         {
             return;
         }
 
-		$this->joomlaModules[$module->id]['timer.end'] = microtime(true);
-		$this->joomlaModules[$module->id]['timer.total'] = $this->joomlaModules[$module->id]['timer.end'] - $this->joomlaModules[$module->id]['timer.start'];
-		$this->joomlaModules[$module->id]['title'] = $module->title;
-		$this->joomlaModules[$module->id]['content'] = $module->content;
-	}
+        $this->joomlaModules[$module->id]['timer.end'] = microtime(true);
+        $this->joomlaModules[$module->id]['timer.total'] = $this->joomlaModules[$module->id]['timer.end'] - $this->joomlaModules[$module->id]['timer.start'];
+        $this->joomlaModules[$module->id]['title'] = $module->title;
+        $this->joomlaModules[$module->id]['content'] = $module->content;
+    }
 
-	/**
-	 * Method called after a specific file has been found through JPath::find()
-	 *
-	 * @param array $context
-	 * @param array $storage
-	 */
+    /**
+     * Method called after a specific file has been found through JPath::find()
+     *
+     * @param array $context
+     * @param array $storage
+     */
     public function afterPathFind($context, &$storage)
     {
         $arguments = $context['functionArgs'];
@@ -371,15 +371,15 @@ class Joomla
         );
     }
 
-	/**
-	 * Method to return an array representing the current Joomla configuration
-	 *
-	 * @return array
-	 */
-	private function getConfig()
-	{
-		$app = JFactory::getApplication();
-		$config = JFactory::getConfig();
+    /**
+     * Method to return an array representing the current Joomla configuration
+     *
+     * @return array
+     */
+    private function getConfig()
+    {
+        $app = JFactory::getApplication();
+        $config = JFactory::getConfig();
 
         $version = null;
         if (!class_exists('JVersion')) {
@@ -391,45 +391,45 @@ class Joomla
             $version = $jversion->getLongVersion();
         }
 
-		$data = array(
-			array('Key' => 'Joomla Version', 'Value' => $version),
-			array('Key' => 'Joomla Template', 'Value' => $app->getTemplate()),
-			array('Key' => 'Caching', 'Value' => $config->get('caching')),
-			array('Key' => 'Cache handler', 'Value' => $config->get('cache_handler')),
-			array('Key' => 'Cache time', 'Value' => $config->get('cachetime')),
-			array('Key' => 'Session handler', 'Value' => $config->get('session_handler')),
-			array('Key' => 'SEF', 'Value' => $config->get('sef')),
-			array('Key' => 'SEF Rewrites', 'Value' => $config->get('sef_rewrite')),
-			array('Key' => 'Debug', 'Value' => $config->get('debug')),
-			array('Key' => 'Gzip', 'Value' => $config->get('gzip')),
-			array('Key' => 'Error reporting', 'Value' => $config->get('error_reporting')),
-			array('Key' => 'DB type', 'Value' => $config->get('dbtype')),
-			array('Key' => 'DB host', 'Value' => $config->get('host')),
-			array('Key' => 'DB database', 'Value' => $config->get('db')),
-			array('Key' => 'Offset', 'Value' => $config->get('offset')),
-			array('Key' => 'Mailer', 'Value' => $config->get('mailer')),
-		);
+        $data = array(
+            array('Key' => 'Joomla Version', 'Value' => $version),
+            array('Key' => 'Joomla Template', 'Value' => $app->getTemplate()),
+            array('Key' => 'Caching', 'Value' => $config->get('caching')),
+            array('Key' => 'Cache handler', 'Value' => $config->get('cache_handler')),
+            array('Key' => 'Cache time', 'Value' => $config->get('cachetime')),
+            array('Key' => 'Session handler', 'Value' => $config->get('session_handler')),
+            array('Key' => 'SEF', 'Value' => $config->get('sef')),
+            array('Key' => 'SEF Rewrites', 'Value' => $config->get('sef_rewrite')),
+            array('Key' => 'Debug', 'Value' => $config->get('debug')),
+            array('Key' => 'Gzip', 'Value' => $config->get('gzip')),
+            array('Key' => 'Error reporting', 'Value' => $config->get('error_reporting')),
+            array('Key' => 'DB type', 'Value' => $config->get('dbtype')),
+            array('Key' => 'DB host', 'Value' => $config->get('host')),
+            array('Key' => 'DB database', 'Value' => $config->get('db')),
+            array('Key' => 'Offset', 'Value' => $config->get('offset')),
+            array('Key' => 'Mailer', 'Value' => $config->get('mailer')),
+        );
 
-		return $data;
-	}
+        return $data;
+    }
 
-	/**
-	 * Method to return an array representing the current HTTP request
-	 *
-	 * @return array
-	 */
-	private function getRequest()
-	{
-		$app = JFactory::getApplication();
+    /**
+     * Method to return an array representing the current HTTP request
+     *
+     * @return array
+     */
+    private function getRequest()
+    {
+        $app = JFactory::getApplication();
         $input = $app->input;
 
-		$request = array(
-			'option' => array('Key' => 'Component', 'Value' => $input->get('option')),
-			'view' => array('Key' => 'View', 'Value' => $input->get('view')),
-			'layout' => array('Key' => 'Layout', 'Value' => $input->get('layout', 'default')),
-			'id' => array('Key' => 'ID', 'Value' => $input->get('id')),
-			'Itemid' => array('Key' => 'Itemid', 'Value' => $input->get('Itemid')),
-		);
+        $request = array(
+            'option' => array('Key' => 'Component', 'Value' => $input->get('option')),
+            'view' => array('Key' => 'View', 'Value' => $input->get('view')),
+            'layout' => array('Key' => 'Layout', 'Value' => $input->get('layout', 'default')),
+            'id' => array('Key' => 'ID', 'Value' => $input->get('id')),
+            'Itemid' => array('Key' => 'Itemid', 'Value' => $input->get('Itemid')),
+        );
 
         // Dump other variables
         foreach ($_REQUEST as $name => $value) {
@@ -440,14 +440,14 @@ class Joomla
             $request[$name] = array('Key' => $name, 'Value' => $value);
         }
 
-		return $request;
-	}
+        return $request;
+    }
 
-	/**
-	 * Method to return an array of all found files
-	 *
-	 * @return array
-	 */
+    /**
+     * Method to return an array of all found files
+     *
+     * @return array
+     */
     private function getFiles()
     {
         $templateFiles = array();
@@ -458,13 +458,13 @@ class Joomla
         return $templateFiles;
     }
 
-	/**
-	 * Method to return an array representing all rendered modules
-	 *
-	 * @return array
-	 */
-	private function getModules()
-	{
+    /**
+     * Method to return an array representing all rendered modules
+     *
+     * @return array
+     */
+    private function getModules()
+    {
         $modules = array();
         foreach($this->joomlaModules as $joomlaModule) {
 
@@ -481,13 +481,13 @@ class Joomla
         }
 
         return $modules;
-	}
+    }
 
-	/**
-	 * Method to return an array representing all loaded plugins
-	 *
-	 * @return array
-	 */
+    /**
+     * Method to return an array representing all loaded plugins
+     *
+     * @return array
+     */
     private function getPlugins()
     {
         $plugins = array();
@@ -508,13 +508,13 @@ class Joomla
         return $plugins;
     }
 
-	/**
-	 * Method to return an array representing all triggered events
-	 *
-	 * @return array
-	 */
-	private function getEvents()
-	{
+    /**
+     * Method to return an array representing all triggered events
+     *
+     * @return array
+     */
+    private function getEvents()
+    {
         $events = array();
         foreach($this->joomlaEvents as $joomlaEvent) {
 
@@ -531,8 +531,8 @@ class Joomla
             );
         }
 
-		return $events;
-	}
+        return $events;
+    }
 
     /**
      * Helper method to dump a variable to a string
@@ -576,7 +576,7 @@ class Joomla
 $zrayJoomla = new Joomla();
 $zrayJoomla->setZRay(new ZRayExtension('joomla'));
 $zrayJoomla->getZRay()->setMetadata(array(
-	'logo' => __DIR__ . DIRECTORY_SEPARATOR . 'logo.png',
+    'logo' => __DIR__ . DIRECTORY_SEPARATOR . 'logo.png',
 ));
 
 // Enable only after JApplication has been fetched
