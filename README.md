@@ -6,7 +6,7 @@ More information on the usage of this extension can be found on our site:
 [www.yireo.com/software/joomla-extensions/zray](https://www.yireo.com/software/joomla-extensions/zray)
 
 ### Current state
-Version 0.2.2 (stable) = Ready for production. Leave your comment for feature suggestions.
+Version 0.2.4 (stable) = Ready for production. Leave your comment for feature suggestions.
 
 ### Requirements
 Zend Server 8 with Z-Ray support enabled.
@@ -26,7 +26,7 @@ Create a directory `/usr/local/zend/var/zray/extensions/Joomla`, and add the con
 * Listing of triggered Joomla events (`onAfterRender`, etcetera)
 * Listing of Joomla plugins that catch a triggered event (`plgContentEmailcloak`, etcetera)
 * Listing of request data (component-name, view, layout, ID, Itemid, other data)
-* Listing of configuration data (version, template, global config)
+* Listing of configuration data (version, template name, template parameters, global config)
 
 ### Contact
 Open an issue in the GitHub repo if you want. Alternatively, contact me at jisse AT yireo AT com or tweet to @yireo. Eat your vegetables.
