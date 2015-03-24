@@ -7,7 +7,7 @@
  * @copyright Copyright 2015
  * @license   Zend Server License
  * @link      https://www.yireo.com/software/joomla/zray
- * @version   0.2.3
+ * @version   0.2.4
  */
 class Joomla
 {
@@ -409,6 +409,15 @@ class Joomla
             array('Key' => 'Offset', 'Value' => $config->get('offset')),
             array('Key' => 'Mailer', 'Value' => $config->get('mailer')),
         );
+
+        $template = $app->getTemplate(true);
+        $params = $template->params;
+        foreach($params as $name => $value) {
+            $data[] = array(
+                'Key' => 'Template Parameter: '.$name,
+                'Value' => $value,
+            );
+        }
 
         return $data;
     }
