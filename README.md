@@ -9,7 +9,9 @@ More information on the usage of this extension can be found on our site:
 Version 0.2.4 (stable) = Ready for production. Leave your comment for feature suggestions.
 
 ### Requirements
-Zend Server 8 with Z-Ray support enabled.
+For version 2.4: Zend Server 8.0 with Z-Ray support enabled.
+
+For version 2.5 or higher: Zend Server 8.1 with Z-Ray support enabled.
 
 This extension will only output on Joomla sites with the Z-Ray toolbar enabled.
 
