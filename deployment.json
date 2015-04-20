@@ -1,6 +1,6 @@
 {
   "name" : "Joomla",
-  "version" : "1.0.0",
+  "version" : "0.2.5",
   "type": ["zray"],
-  "logo": "zray/logo.png"
+  "logo": "logo.png"
 }

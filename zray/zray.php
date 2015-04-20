@@ -64,12 +64,12 @@ class Joomla
      */
     public function afterDocumentRender($context, &$storage)
     {
-        $storage['1-request'] = $this->getRequest();
-        $storage['2-config'] = $this->getConfig();
-        $storage['3-modules'] = $this->getModules();
-        $storage['4-events'] = $this->getEvents();
-        $storage['5-plugins'] = $this->getPlugins();
-        $storage['6-files'] = $this->getFiles();
+        $storage['request'] = $this->getRequest();
+        $storage['config'] = $this->getConfig();
+        $storage['modules'] = $this->getModules();
+        $storage['events'] = $this->getEvents();
+        $storage['plugins'] = $this->getPlugins();
+        $storage['files'] = $this->getFiles();
     }
 
     /**
