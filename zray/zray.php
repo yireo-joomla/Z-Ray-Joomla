@@ -484,7 +484,7 @@ class Joomla
             $module['Cached'] = ($joomlaModule['cache']) ? 'Yes' : 'No';
             $module['ID'] = $joomlaModule['id'];
             $module['Time'] = $this->formatTime($joomlaModule['timer.total']);
-            $module['Content'] = (empty($joomlaModule['content'])) ? 'No content' : $joomlaModule['content'];
+            $module['Content'] = (empty($joomlaModule['content'])) ? 'No content' : htmlentities($joomlaModule['content']);
 
             $modules[] = $module;
         }
