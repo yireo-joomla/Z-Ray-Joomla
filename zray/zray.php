@@ -4,10 +4,10 @@
  * Zend Server 8 Z-Ray Extension for Joomla!
  *
  * @author    Jisse Reitsma (jisse@yireo.com)
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license   Zend Server License
  * @link      https://www.yireo.com/software/joomla/zray
- * @version   0.2.5
+ * @version   0.2.7
  */
 class Joomla
 {
@@ -153,7 +153,7 @@ class Joomla
     public function beforePluginFunctionCall($context, &$storage)
     {
         $arguments = $context['functionArgs'];
-        if (!isset($arguments[0][0])) {
+        if (!is_array($arguments) || !is_array($arguments[0]) || empty($arguments[0])) {
             return;
         }
 
