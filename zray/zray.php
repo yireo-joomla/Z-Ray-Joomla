@@ -190,7 +190,7 @@ class Joomla
     public function afterPluginFunctionCall($context, &$storage)
     {
         $arguments = $context['functionArgs'];
-        if (!isset($arguments[0][0])) {
+        if (!is_array($arguments) || !is_array($arguments[0]) || empty($arguments[0])) {
             return;
         }
 
