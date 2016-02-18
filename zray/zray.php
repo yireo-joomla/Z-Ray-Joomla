@@ -7,7 +7,7 @@
  * @copyright Copyright 2016
  * @license   Zend Server License
  * @link      https://www.yireo.com/software/joomla/zray
- * @version   0.2.7
+ * @version   0.2.8
  */
 class Joomla
 {

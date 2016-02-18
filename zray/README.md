@@ -6,11 +6,11 @@ More information on the usage of this extension can be found on our site:
 [www.yireo.com/software/joomla-extensions/zray](https://www.yireo.com/software/joomla-extensions/zray)
 
 ### Current state
-Version 0.2.7 (stable) = Ready for production. Leave your comment for feature suggestions.
+Version 0.2.8 (stable) = Ready for production. Leave your comment for feature suggestions.
 
 ### Requirements
-- For version 2.4: Zend Server 8.0 with Z-Ray support enabled.
-- For version 2.5 or higher: Zend Server 8.1 with Z-Ray support enabled.
+- For version 0.2.4: Zend Server 8.0 with Z-Ray support enabled.
+- For version 0.2.5 or higher: Zend Server 8.1 with Z-Ray support enabled.
 
 This extension will only output on Joomla sites with the Z-Ray toolbar enabled.
 

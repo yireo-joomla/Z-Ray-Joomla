@@ -1,7 +1,7 @@
 {
   "name" : "Joomla",
   "display_name" : "Joomla",
-  "version" : "0.2.7",
+  "version" : "0.2.8",
   "type": ["zray"],
   "logo": "logo.png",
   "eula": "LICENSE.txt",
