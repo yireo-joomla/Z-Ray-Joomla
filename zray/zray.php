@@ -7,7 +7,7 @@
  * @copyright Copyright 2016
  * @license   Zend Server License
  * @link      https://www.yireo.com/software/joomla/zray
- * @version   0.2.8
+ * @version   0.2.9
  */
 class Joomla
 {
@@ -107,6 +107,7 @@ class Joomla
             'class' => $pluginClass,
             'method' => $method,
             'timer.start' => microtime(true),
+            'timer.total' => microtime(true),
         );
     }
 
@@ -178,6 +179,7 @@ class Joomla
             'class' => $pluginClass,
             'method' => $method,
             'timer.start' => microtime(true),
+            'timer.total' => microtime(true),
         );
     }
 
@@ -502,9 +504,9 @@ class Joomla
         $plugins = array();
         foreach($this->joomlaPlugins as $joomlaPlugin) {
 
-            if(!isset($joomlaPlugin['timer.total'])) {
-                print_r($joomlaPlugin);
-            }
+            //if(!isset($joomlaPlugin['timer.total'])) {
+            //    print_r($joomlaPlugin);
+            //}
 
             $plugins[] = array(
                 'Type' => $joomlaPlugin['type'],
